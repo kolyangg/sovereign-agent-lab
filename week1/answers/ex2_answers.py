@@ -78,11 +78,6 @@ Although in scenario 3 it could have just refused to answer and asked the user a
 
 # Paste the Mermaid output from `python exercise2_langgraph.py task_d` here.
 TASK_D_MERMAID_OUTPUT = """
-PASTE MERMAID OUTPUT HERE
-"""
-
-# Compare the LangGraph graph to exercise3_rasa/data/rules.yml. Min 30 words.
-TASK_D_COMPARISON = """
 ---
 config:
   flowchart:
@@ -100,6 +95,11 @@ graph TD;
         classDef default fill:#f2f0ff,line-height:1.2
         classDef first fill-opacity:0
         classDef last fill:#bfb6fc
+"""
+
+# Compare the LangGraph graph to exercise3_rasa/data/rules.yml. Min 30 words.
+TASK_D_COMPARISON = """
+
 """
 
 # ── Reflection ─────────────────────────────────────────────────────────────
