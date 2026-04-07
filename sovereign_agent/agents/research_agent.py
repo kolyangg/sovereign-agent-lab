@@ -69,7 +69,8 @@ load_dotenv()
 llm = ChatOpenAI(
     base_url="https://api.tokenfactory.nebius.com/v1/",
     api_key=os.getenv("NEBIUS_KEY"),
-    model="meta-llama/Llama-3.3-70B-Instruct",
+    # model="meta-llama/Llama-3.3-70B-Instruct",
+    model="Qwen/Qwen3-32B", ### FIX FOR "No tool calls were made" ERROR
     temperature=0,
 )
 
@@ -121,6 +122,19 @@ def run_research_agent(task: str, max_turns: int = 8) -> dict:
     for m in result["messages"]:
         role    = getattr(m, "type", "unknown")
         content = m.content
+
+        ### FIX FOR "No tool calls were made" ERROR
+        # OpenAI/LangChain-style tool calls live here
+        if getattr(m, "tool_calls", None):
+            for tc in m.tool_calls:
+                entry = {
+                    "tool": tc["name"],
+                    "args": tc.get("args", {}),
+                }
+                tool_calls_made.append(entry)
+                full_trace.append({"role": "tool_call", **entry})
+        ### FIX FOR "No tool calls were made" ERROR
+        
 
         # Tool-call messages have structured list content
         if isinstance(content, list):
