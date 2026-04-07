@@ -199,12 +199,13 @@ def generate_event_flyer(venue_name: str, guest_count: int, event_theme: str) ->
     )
     
     # 4. Call the image API:
-    response = client.images.generate(
-        model="black-forest-labs/flux-schnell",
-        prompt=prompt,
-        n=1,
-    )
-    url = response.data[0].url
+    try:
+        response = client.images.generate(
+            model="black-forest-labs/flux-schnell",
+            prompt=prompt,
+            n=1,
+        )
+        image_url = response.data[0].url
 
     # 5. Return a dict with at minimum: success, prompt_used, image_url
     #    On failure, return: success=False, error=str(e), prompt_used, image_url=""
@@ -212,23 +213,18 @@ def generate_event_flyer(venue_name: str, guest_count: int, event_theme: str) ->
     # When implemented, the mechanical check in grade.py will pass automatically.
     # ──────────────────────────────────────────────────────────────────────────
 
-    prompt = (
-        f"Professional event flyer for {event_theme} at {venue_name}, "
-        f"Edinburgh. {guest_count} guests."
-    )
-    
     # check if get the image URL successfully
-    if url:
+    
         return json.dumps({
             "success": True,
             "prompt_used": prompt,
-            "image_url": url,
+            "image_url": image_url,
         })
     
-    else: 
+    except Exception as e: 
         return json.dumps({
             "success": False,
             "error": str(e),
             "prompt_used": prompt,
-            "image_url": url,
+            "image_url": "",
     })
