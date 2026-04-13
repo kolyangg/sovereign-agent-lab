@@ -99,7 +99,9 @@ graph TD;
 
 # Compare the LangGraph graph to exercise3_rasa/data/rules.yml. Min 30 words.
 TASK_D_COMPARISON = """
-
+The LangGraph Mermaid output is very abstract: it only shows a single loop where the agent decides whether to end or call tools, then reasons again after each tool result. 
+By contrast, `exercise3_rasa/data/flows.yml` is explicit and task-specific. It defines concrete flows like `confirm_booking` and `handle_out_of_scope`, fixes the slot collection order, and ends with a named validation action. 
+LangGraph is more flexible but less predictable, while CALM is more constrained, readable, and auditable.
 """
 
 # ── Reflection ─────────────────────────────────────────────────────────────
@@ -108,5 +110,5 @@ TASK_D_COMPARISON = """
 # Must reference a specific behaviour from your run.
 
 MOST_SURPRISING = """
-FILL ME IN
+Nothing really unexpected. Thought it mught hallucinate more in scenario 2 but it handled it well. In scenario 3, I was half expecting it to try to call a tool or give a made-up train time, but instead it gave a reasonable refusal and suggestions for next steps.
 """

@@ -202,7 +202,7 @@ ex3-train: ## Train the Rasa Pro CALM model (run once, or after changing .yml fi
 	@echo "$(YELLOW)This takes about 2 minutes (embedding model download on first run).$(RESET)"
 	@echo "$(BLUE)Note: CALM trains much faster than old Rasa — no NLU examples to learn.$(RESET)"
 	@echo ""
-	cd $(RASA_DIR) && $(UV) run rasa train
+	cd $(RASA_DIR) && $(UV) run python run_rasa.py train
 	@echo ""
 	@echo "$(GREEN)✓ Model trained.$(RESET)"
 	@echo "  Now open $(GREEN)two$(RESET) terminals:"
@@ -215,7 +215,7 @@ ex3-actions: ## Terminal 1 — start the action server (keep this running)
 	@echo "$(YELLOW)Keep this terminal open. Start the chat in a second terminal with:$(RESET)"
 	@echo "$(YELLOW)  make ex3-chat$(RESET)"
 	@echo ""
-	cd $(RASA_DIR) && $(UV) run rasa run actions
+	cd $(RASA_DIR) && $(UV) run python run_rasa.py run actions
 
 .PHONY: ex3-chat
 ex3-chat: ## Terminal 2 — chat with the Rasa agent (run AFTER ex3-actions is running)
@@ -232,7 +232,7 @@ ex3-chat: ## Terminal 2 — chat with the Rasa agent (run AFTER ex3-actions is r
 	@echo ""
 	@echo "$(YELLOW)Copy-paste your terminal output into week1/answers/ex3_answers.py$(RESET)"
 	@echo ""
-	cd $(RASA_DIR) && $(UV) run rasa shell
+	cd $(RASA_DIR) && $(UV) run python run_rasa.py shell
 
 .PHONY: ex3-retrain
 ex3-retrain: ex3-train ## Alias: retrain after Task B changes (same as ex3-train)

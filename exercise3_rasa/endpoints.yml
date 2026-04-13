@@ -33,7 +33,7 @@ action_endpoint:
 model_groups:
   - id: nebius_llm
     models:
-      - provider: self-hosted
+      - provider: openai # self-hosted
         model: meta-llama/Llama-3.3-70B-Instruct
         api_base: "https://api.tokenfactory.nebius.com/v1"
         api_key: ${NEBIUS_KEY}

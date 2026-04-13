@@ -44,6 +44,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+# ### FIX TOOL CALLING ERROR ###
+from pydantic import create_model
+# ### FIX TOOL CALLING ERROR ###
 
 load_dotenv()
 
@@ -78,6 +81,23 @@ def _make_mcp_caller(tool_name: str, server_script: str):
     return call
 
 
+# ### FIX TOOL CALLING ERROR ###
+def _args_model_from_input_schema(tool_name: str, input_schema: dict):
+    type_map = {
+        "string": str,
+        "integer": int,
+        "number": float,
+        "boolean": bool,
+    }
+    required = set(input_schema.get("required", []))
+    fields = {}
+    for name, spec in input_schema.get("properties", {}).items():
+        py_type = type_map.get(spec.get("type"), str)
+        fields[name] = (py_type, ... if name in required else None)
+    return create_model(f"{tool_name}Args", **fields)
+# ### FIX TOOL CALLING ERROR ###
+
+
 async def discover_tools(server_script: str) -> list:
     """
     Connect once, list all tools, and wrap each as a LangChain StructuredTool.
@@ -93,11 +113,19 @@ async def discover_tools(server_script: str) -> list:
             raw   = await session.list_tools()
             tools = []
             for t in raw.tools:
+                # ### FIX TOOL CALLING ERROR ###
+                input_schema = (
+                    getattr(t, "inputSchema", None)
+                    or getattr(t, "input_schema", None)
+                    or {}
+                )
                 lc_tool = StructuredTool.from_function(
                     func=_make_mcp_caller(t.name, server_script),
                     name=t.name,
                     description=t.description or f"MCP tool: {t.name}",
+                    args_schema=_args_model_from_input_schema(t.name, input_schema),
                 )
+                # ### FIX TOOL CALLING ERROR ###
                 tools.append(lc_tool)
             return tools, [t.name for t in raw.tools]
 
@@ -132,12 +160,15 @@ def print_trace(trace: list) -> None:
 
 
 async def main() -> None:
+    # ### FIX TOOL CALLING ERROR ###
     llm = ChatOpenAI(
         base_url="https://api.tokenfactory.nebius.com/v1/",
         api_key=os.getenv("NEBIUS_KEY"),
-        model="meta-llama/Llama-3.3-70B-Instruct",
+        # model="meta-llama/Llama-3.3-70B-Instruct",
+        model="Qwen/Qwen3-32B",
         temperature=0,
     )
+    # ### FIX TOOL CALLING ERROR ###
 
     print("\nExercise 4 — LangGraph + MCP")
     print("Discovering tools from mcp_venue_server.py...")
